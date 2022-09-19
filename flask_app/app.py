@@ -4,9 +4,22 @@ from flask_bootstrap import Bootstrap
 import boto3
 from filters import datetimeformat, file_type
 from resources import get_bucket, show_bucket,  get_buckets_list
+from prometheus_client.core import CollectorRegistry
+from prometheus_client.core import Summary, Counter, Histogram, Gauge
+from prometheus_flask_exporter import PrometheusMetrics
 
 app = Flask(__name__)
+
+# _INF=float("inf")
+
+# graphs={}
+# graphs['c']= Counter('python_request_operations_total', 'The total number of processed requests')
+# graphs['h']= Histogram('python_request_duration_seconds', 'Histogram for the duration in seconds', buckets=(1,2,5,6,10,_INF))
+
+metrics = PrometheusMetrics(app)
 Bootstrap(app)
+metrics.info("app_info", "App Info, this can be anything you want", version="1.0.0")
+    
 app.secret_key = 'secret'
 app.jinja_env.filters['datetimeformat'] = datetimeformat
 app.jinja_env.filters['file_type'] = file_type
